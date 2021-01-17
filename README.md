@@ -6,4 +6,6 @@ https://huggingface.co/transformers/v4.1.1/model_doc/bart.html
 
 http://yanran.li/dailydialog
 
+https://github.com/facebookresearch/EmpatheticDialogues
+
 https://github.com/pytorch/fairseq/blob/master/examples/bart/README.summarization.md

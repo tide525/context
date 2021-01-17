@@ -1,7 +1,6 @@
 import argparse
 import csv
 import os
-import random
 import shutil
 
 import numpy as np
@@ -53,7 +52,7 @@ class DialogueDataset(Dataset):
 
 
 def label_smoothed_nll_loss(lprobs, target, epsilon, ignore_index=-100):
-    """From fairseq"""
+    '''From fairseq'''
     if target.dim() == lprobs.dim() - 1:
         target = target.unsqueeze(-1)
     nll_loss = -lprobs.gather(dim=-1, index=target)
@@ -184,21 +183,21 @@ class BartTrainer(LightningModule):
 
     def configure_optimizers(self):
         # optimizer
-        no_decay = ["bias", "LayerNorm.weight"]
+        no_decay = ['bias', 'LayerNorm.weight']
         optimizer_grouped_parameters = [
             {
-                "params": [
+                'params': [
                     p for n, p in self.model.named_parameters()
                     if not any(nd in n for nd in no_decay)
                 ],
-                "weight_decay": self.hparams.weight_decay,
+                'weight_decay': self.hparams.weight_decay,
             },
             {
-                "params": [
+                'params': [
                     p for n, p in self.model.named_parameters()
                     if any(nd in n for nd in no_decay)
                 ],
-                "weight_decay": 0.0,
+                'weight_decay': 0.0,
             },
         ]
         betas = tuple(
@@ -277,7 +276,7 @@ def main():
     parser.add_argument('--accumulate_grad_batches', default=4)
     parser.add_argument('--gpus', default=1)
     parser.add_argument('--gradient_clip_val', default=0.1)
-    parser.add_argument('--max_epochs', default=16)  # approximately 20000 updates
+    parser.add_argument('--max_epochs', default=32)
 
     args = parser.parse_args()
     
