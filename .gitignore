@@ -1,6 +1,9 @@
+__pycache__/
+
 dd_*/
 ed_*/
 
 *.sh
 
+lightning_logs/
 bart_*/

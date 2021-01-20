@@ -11,36 +11,44 @@ parser.add_argument('dataset', choices=['dd', 'ed'])
 
 parser.add_argument('--context', action='store_true')
 parser.add_argument('--sep_token', default='</s>')
+parser.add_argument('--one_sep_token', action='store_true')
 
 args = parser.parse_args()
 
 for split in ['train', 'validation', 'test']:
-    src_texts = []
-    tgt_texts = []
+    dialogues = []
 
     # DailyDialog
     if args.dataset == 'dd':
         with open(os.path.join(args.input_dir, split, 'dialogues_' + split + '.txt')) as f:
             for line in f:
-                utterances = [utterance.strip() for utterance in line.split('__eou__')[:-1]]
-                for i in range(1, len(utterances)):
-                    src_texts.append(args.sep_token.join(utterances[:i]) if args.context else utterances[i-1])
-                    tgt_texts.append(utterances[i])
+                dialogues.append([u.strip() for u in line.split('__eou__')[:-1]])
 
     # EmpatheticDialogues
-    else:
+    else:  
         with open(os.path.join(args.input_dir, split[:5] + '.csv')) as f:
             utterances = []
             conv_id = ''
             for row in csv.DictReader(f):
                 if row['conv_id'] != conv_id and utterances:
-                    for i in range(1, len(utterances)):
-                        src_texts.append(args.sep_token.join(utterances[:i]) if args.context else utterances[i-1])
-                        tgt_texts.append(utterances[i])
+                    dialogues.apppend(utterances)
                     utterances = []
                 utterances.append(row['utterance'].replace('_comma_', ','))
                 conv_id = row['conv_id']
+            dialogues.apppend(utterances)
+
+    pairs = []
+    for utterances in dialogues:
+        for i in range(1, len(utterances)):
+            if args.context and i > 1:
+                if args.one_sep_token:
+                    src_text = ' '.join(utterances[:i-1]) + args.sep_token + utterances[i-1]
+                else:
+                    src_text = args.sep_token.join(utterances[:i])
+            else:
+                src_text = utterances[i-1]
+            pairs.append((src_text, utterances[i]))
 
     with open(os.path.join(args.output_dir, ('val' if split == 'validation' else split) + '.tsv'), 'w') as f:
-        for src_text, tgt_text in zip(src_texts, tgt_texts):
-            f.write(src_text + '\t' + tgt_text + '\n')
+        for pair in pairs:
+            f.write('\t'.join(pair) + '\n')

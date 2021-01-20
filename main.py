@@ -190,19 +190,17 @@ class BartTrainer(LightningModule):
                     p for n, p in self.model.named_parameters()
                     if not any(nd in n for nd in no_decay)
                 ],
-                'weight_decay': self.hparams.weight_decay,
+                'weight_decay': self.hparams.weight_decay
             },
             {
                 'params': [
                     p for n, p in self.model.named_parameters()
                     if any(nd in n for nd in no_decay)
                 ],
-                'weight_decay': 0.0,
+                'weight_decay': 0.0
             },
         ]
-        betas = tuple(
-            float(b) for b in self.hparams.adam_betas[1:-1].split(',')
-        )
+        betas = tuple(map(float, self.hparams.adam_betas[1:-1].split(',')))
         optimizer = AdamW(
             optimizer_grouped_parameters,
             betas=betas,
@@ -216,13 +214,14 @@ class BartTrainer(LightningModule):
             // self.hparams.accumulate_grad_batches
             * self.hparams.max_epochs
         )
-        scheduler = get_linear_schedule_with_warmup(
+        lr_scheduler = get_linear_schedule_with_warmup(
             optimizer,
             num_warmup_steps=self.hparams.num_warmup_steps,
             num_training_steps=num_training_steps
         )
+        lr_dict = {'scheduler': lr_scheduler, 'interval': 'step'}
 
-        return [optimizer], [scheduler]
+        return [optimizer], [lr_dict]
 
     def train_dataloader(self):
         return self.train_loader
@@ -276,7 +275,7 @@ def main():
     parser.add_argument('--accumulate_grad_batches', default=4)
     parser.add_argument('--gpus', default=1)
     parser.add_argument('--gradient_clip_val', default=0.1)
-    parser.add_argument('--max_epochs', default=32)
+    parser.add_argument('--max_epochs', default=16)
 
     args = parser.parse_args()
     
