@@ -259,23 +259,23 @@ def main():
     parser.add_argument('data_dir')
     parser.add_argument('output_dir')
 
-    parser.add_argument('--seed', default=42)
+    parser.add_argument('--seed', default=42, type=int)
 
-    parser.add_argument('--label_smoothing', default=0.1)
-    parser.add_argument('--weight_decay', default=0.01)
-    parser.add_argument('--lr', default=3e-5)
+    parser.add_argument('--label_smoothing', default=0.1, type=float)
+    parser.add_argument('--weight_decay', default=0.01, type=float)
+    parser.add_argument('--lr', default=3e-5, type=float)
     parser.add_argument('--adam_betas', default='(0.9,0.999)')
-    parser.add_argument('--adam_eps', default=1e-8)
-    parser.add_argument('--num_warmup_steps', default=500)
+    parser.add_argument('--adam_eps', default=1e-8, type=float)
+    parser.add_argument('--num_warmup_steps', default=500, type=int)
 
-    parser.add_argument('--train_batch_size', default=16)
-    parser.add_argument('--val_batch_size', default=16)
-    parser.add_argument('--max_length', default=128)
+    parser.add_argument('--train_batch_size', default=16, type=int)
+    parser.add_argument('--val_batch_size', default=16, type=int)
+    parser.add_argument('--max_length', default=128, type=int)
 
-    parser.add_argument('--accumulate_grad_batches', default=4)
-    parser.add_argument('--gpus', default=1)
-    parser.add_argument('--gradient_clip_val', default=0.1)
-    parser.add_argument('--max_epochs', default=16)
+    parser.add_argument('--accumulate_grad_batches', default=4, type=int)
+    parser.add_argument('--gpus', default=1, type=int)
+    parser.add_argument('--gradient_clip_val', default=0.1, type=float)
+    parser.add_argument('--max_epochs', default=16, type=int)
 
     args = parser.parse_args()
     

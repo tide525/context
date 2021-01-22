@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('input_dir')
 parser.add_argument('output_dir')
 
-parser.add_argument('dataset', choices=['dd', 'ed'])
+parser.add_argument('--corpus_name', default='dd', choices=['dd', 'ed'])
 
 parser.add_argument('--context', action='store_true')
 parser.add_argument('--sep_token', default='</s>')
@@ -19,7 +19,7 @@ for split in ['train', 'validation', 'test']:
     dialogues = []
 
     # DailyDialog
-    if args.dataset == 'dd':
+    if args.corpus_name == 'dd':
         with open(os.path.join(args.input_dir, split, 'dialogues_' + split + '.txt')) as f:
             for line in f:
                 dialogues.append([u.strip() for u in line.split('__eou__')[:-1]])
@@ -29,13 +29,13 @@ for split in ['train', 'validation', 'test']:
         with open(os.path.join(args.input_dir, split[:5] + '.csv')) as f:
             utterances = []
             conv_id = ''
-            for row in csv.DictReader(f):
+            for row in csv.DictReader(f, quoting=csv.QUOTE_NONE):
                 if row['conv_id'] != conv_id and utterances:
-                    dialogues.apppend(utterances)
+                    dialogues.append(utterances)
                     utterances = []
                 utterances.append(row['utterance'].replace('_comma_', ','))
                 conv_id = row['conv_id']
-            dialogues.apppend(utterances)
+            dialogues.append(utterances)
 
     pairs = []
     for utterances in dialogues:
