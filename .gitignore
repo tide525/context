@@ -3,6 +3,8 @@ __pycache__/
 dd_*/
 ed_*/
 
+*.png
+
 *.sh
 
 lightning_logs/
