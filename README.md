@@ -1,4 +1,4 @@
-# BART Dialogue with Context
+# BART Dialogue Generation with Context
 
 Fine-tune `bart-large` for dialogue generation with context.
 
